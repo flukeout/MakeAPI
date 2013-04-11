@@ -5,7 +5,7 @@ var querystring = require('querystring'),
 
     postData, postOptions, postReq,
 
-    numberOfRecords = 25000;
+    numberOfRecords = 1000;
 
 for ( var i = 0; i < numberOfRecords; i++ ) {
 
