@@ -18,7 +18,7 @@ var app = express(),
     routes = require( "./routes" )( env );
 
 var sessionStore = new RedisStore({
-      client: redisUrl.connect(),
+      client: redisUrl.connect(env.get( "REDISTOGO_URL" )),
       maxAge: ( 30 ).days
     });
 
