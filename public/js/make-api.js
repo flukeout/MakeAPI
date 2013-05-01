@@ -14,18 +14,10 @@ var module = module || undefined;
   var Make,
       xhrStrategy,
       apiURL,
-      auth,
-      user,
-      pass,
       request;
 
   function nodeStrategy( type, path, data, callback ) {
     request({
-      auth: {
-        username: user,
-        password: pass,
-        sendImmediately: true
-      },
       method: type,
       uri: path,
       json: data
@@ -45,11 +37,8 @@ var module = module || undefined;
   function browserStrategy( type, path, data, callback ) {
     var request = new XMLHttpRequest();
 
-    if ( auth ) {
-      request.open( type, path, true, user, pass );
-    } else {
-      request.open( type, path, true );
-    }
+    request.open( type, path, true );
+
     request.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
     request.onreadystatechange = function() {
       var response,
@@ -90,13 +79,6 @@ var module = module || undefined;
   // Shorthand for creating a Make Object
   Make = function Make( options ) {
     apiURL = options.apiURL;
-    auth = options.auth;
-
-    if ( auth ) {
-      auth = auth.split( ":" );
-      user = auth[ 0 ];
-      pass = auth[ 1 ];
-    }
 
     var BASE_QUERY = {
           query: {
