@@ -33,14 +33,7 @@ module.exports = function( makeCtor, env ) {
     Make.publicFields.forEach( function( field ) {
       // only update if the field exists on the body
       if ( field in body ) {
-        // arrays need to be concatenated to avoid overwriting elements in the original.
-        if ( Array.isArray( make[ field ] ) ) {
-          make[ field ] = make[ field ].concat( body[ field ] ).filter(function( tag, pos, arr ) {
-            return arr.indexOf( tag ) === pos;
-          });
-        } else {
-          make[ field ] = body[ field ];
-        }
+        make[ field ] = body[ field ];
       }
     });
 
