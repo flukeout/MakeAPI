@@ -11,6 +11,7 @@ module.exports = function routesCtor( makeModel, apiUserModel, env ) {
       res.send( "Hello world!" );
     },
     search: makeRoutes.search,
+    autocomplete: makeRoutes.autocomplete,
     create: makeRoutes.create,
     update: makeRoutes.update,
     remove: makeRoutes.remove,

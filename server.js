@@ -109,6 +109,8 @@ app.put( "/api/20130724/make/report/:id", middleware.hawkAuth, Mongo.isDbOnline,
 app.put( "/api/20130724/make/cancelReport/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.cancelReport, routes.update );
 app.get( "/api/20130724/make/search", Mongo.isDbOnline, middleware.crossOrigin, routes.search );
 
+app.get( "/api/20130724/make/tags", Mongo.isDbOnline, middleware.crossOrigin, routes.autocomplete );
+
 // 20130724 Admin API routes
 app.put( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.collabAuth, middleware.fieldFilter, Mongo.isDbOnline, middleware.getMake, routes.update );
 app.del( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
