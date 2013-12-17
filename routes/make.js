@@ -169,7 +169,7 @@ module.exports = function( makeModel, env ) {
         return error( res, "Autocomplete term required", "autocomplete", 400 );
       }
       var query = queryBuilder.autocomplete( req.query.t, req.query.s );
-      Make.search( query, { hydrate: false }, function( err, results ) {
+      Make.search( query, function( err, results ) {
         if ( err ) {
           error( res, err, "autocomplete", 500 );
         } else {

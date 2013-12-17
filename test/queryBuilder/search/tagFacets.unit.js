@@ -65,7 +65,6 @@ module.exports = function( qb ) {
           assert( dsl );
         });
       }
-      console.log( testCase.size );
       it( "return value should match expected object", function() {
         assert.deepEqual( dsl, testCase.expected );
       });
