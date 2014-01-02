@@ -120,6 +120,8 @@ app.get( "/admin/api/20130724/make/search", Mongo.isDbOnline, routes.search );
 app.get( "/login", csrfMiddleware, routes.login );
 app.get( "/admin", csrfMiddleware, middleware.collabAuth, routes.admin );
 
+app.get( "/autocomplete", routes.autocompleteDemo );
+
 // Admin tool path for generating Hawk Keys
 app.post( "/admin/api/user", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addUser );
 

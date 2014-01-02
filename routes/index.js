@@ -12,6 +12,11 @@ module.exports = function routesCtor( makeModel, apiUserModel, env ) {
     },
     search: makeRoutes.search,
     autocomplete: makeRoutes.autocomplete,
+
+    autocompleteDemo: function( req, res ) {
+      res.render( "autocomplete.html" );
+    },
+
     create: makeRoutes.create,
     update: makeRoutes.update,
     remove: makeRoutes.remove,
