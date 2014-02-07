@@ -1,27 +1,38 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans);
 
+.make-gallery * {
+  margin: 0;
+  padding: 0;
+}
+
 .make-gallery {
   background: #EEE;
-  font-size: 100%;
   overflow: auto;
   padding: 0 1em 1em 0;
+  font-family:  "Open Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
 .make-gallery .make-node {
-  font-family:  "Open Sans","Helvetica Neue", Arial, sans-serif;
   padding: 1em 0 0 1em;
   font-weight: 300;
   float: left;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .make-gallery .make-node-inner {
   background: white;
   -moz-box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2);
-  box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2);
   -webkit-box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2);
+  box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2);
   position: relative;
+}
+
+.make-gallery .make-link {
+  overflow: hidden;
+  display: block;
+  border-bottom: solid 1px #EEE;
 }
 
 .make-gallery .make-thumbnail {
@@ -29,12 +40,11 @@
   background-position: center;
   background-size: cover;
   background-color: white;
-  border-bottom: solid 1px #EEE;
-
+  -webkit-transition: all linear .1s;
 }
 
 .make-gallery .default-thumbnail {
-  background-image: url("../images/chef.png");
+  background-image: url("../images/webmaker-logo-large.png");
 }
 
 .make-gallery .make-thumbnail:hover {
@@ -57,6 +67,7 @@
 .make-gallery .make-details-user {
   color: #333;
   text-decoration: none;
+  font-weight: 500;
   font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
@@ -141,7 +152,7 @@
   display: inline-block;
   position: relative;
   font-size: .9em;
-  padding: 0.6em 0.9em 0.6em 2.4em;
+  padding: 0.6em 0.9em 0.8em 2.4em;
   text-decoration: none;
   font-family: "Open Sans", "Helvetica Neue", sans-serif;
 }
@@ -157,7 +168,7 @@
 
 .make-gallery .make-remix .icon-remix {
   left: .6em;
-  top: 6px;
+  top: 8px;
   display: inline-block;
   width: 20px;
   height: 20px;
@@ -173,37 +184,13 @@
 }
 
 .make-gallery .make-remix:active {
-  background: #3fb58e;
-  border-top: solid 2px #228363;
   border-bottom: none;
   background: #2f9b77;
   border-top: solid 2px #208161;
 }
 
 .make-gallery .make-remix:active .icon-remix {
-  top: 7px;
-}
-
-.make-gallery .button-container .make-like {
-  color: white;
-  padding: .6em 1.2em .7em 1.2em;
-  background-size: 20px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url(../images/make-like-icon-outline.png);
-  border: solid 2px rgba(190,70,41,.2);
-}
-
-.make-gallery .button-container .make-like:hover {
-  background-image: url(../images/make-like-icon.png);
-  border: solid 2px rgba(190,70,41,.5);
-}
-
-
-
-
-.make-gallery .make-like {
-  display: none !important;
+  top: 9px;
 }
 
 .make-gallery .make-node {
@@ -230,3 +217,9 @@
   width: 20%;
 }
 
+
+.make-gallery .make-no-results {
+ padding: 20px;
+ text-align: center;
+ display: none;
+}

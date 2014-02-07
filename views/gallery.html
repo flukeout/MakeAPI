@@ -5,33 +5,42 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Make Gallery</title>
+    <title>Make Sample Gallery</title>
+
+    <!-- Add these 3 guys to your page -->
     <link rel="stylesheet" type="text/css" href="stylesheets/makeGallery.css" >
     <script src="js/make-api.js"></script>
     <script src="js/gallery/03022014/makeGallery.js"></script>
+
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+
   </head>
+
   <body>
-
     <div class="make-gallery"></div>
-
     <script type="text/javascript">
       var gallery = new MakeGallery(
         {
           title: "mozfest",
           limit: 15
         },
-        ".make-gallery", {
-        apiURL: "https://makeapi.webmaker.org"
-      });
+        {
+          elementSelector: ".make-gallery",
+          hidden: ["details"]
+        });
     </script>
-
   </body>
 </html>
 
 <!--
-// tagPrefix: "moz",
-// limit : 4,
-// hidden : ["thumbnail","title","created-by","created-at","description","author-picture","tags","remix-button","likes"],
+// hidden : ["thumbnail","title","created-by","created-at","description","author-picture","tags","remix-button","likes-count"],
 // fallbackThumbnail : "http://i.imgur.com/FgPkC7M.gif"
 // fallbackAvatar : "http://zachbussey.com/wp-content/uploads/2011/02/Cute-Kitten.jpg"
+// backgroundColor: "black"
+fallbackThumbnail : "http://i.imgur.com/FgPkC7M.gif"
 -->

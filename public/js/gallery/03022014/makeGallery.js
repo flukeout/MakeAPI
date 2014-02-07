@@ -1,5 +1,7 @@
 (function() {
 
+  var noMakesHTML = '<p class="make-no-results"><strong>Sorry!</strong> We couldnt find any makes that match your search.</p>';
+
   var makeHTML = '' +
 ' <div class="make-node">' +
 ' <div class="make-node-inner">' +
@@ -14,7 +16,7 @@
 '        <img class="make-user-avatar">' +
 '        <span class="make-meta-author">Created by <a href="#" class="make-details-user">@flukeout</a></span>' +
 '        <span class="make-meta-timestamp"><span class="make-details-timestamp"></span> ago</span>' +
-'        <span class="make-likes">,'+
+'<span class="make-likes">,'+
 '         <span class="make-likes-count"></span> like</span>' +
 '        </span>'+
 '     </p>' +
@@ -26,17 +28,20 @@
 '          <span class="icon-remix"></span>' +
 '          Remix' +
 '        </a>' +
-'        <a href="#" class="make-like">' +
-'          &nbsp;' +
-'        </a>' +
 '      </div>' +
 '    </div>';
 
   var galleryElement;
+
+  var minWidth = 250;       //Minimum width of a Gallery item
+  var DEFAULT_LIMIT = 10;   //Default result limit
+
   var resizeDelay = 25;
-  var default_profileBaseURL = "https://webmaker.org/u/";
-  var DEFAULT_LIMIT = 10;
+
+  var MakeAPIURL = "https://makeapi.webmaker.org";
   var MakeAPI = window.Make;
+
+  var default_profileBaseURL = "https://webmaker.org/u/";
   var fallbackAvatar = "https://i1.wp.com/stuff.webmaker.org/avatars/webmaker-avatar-44x44.png";
 
   var delayer;
@@ -66,7 +71,6 @@
     if(hidden.indexOf("thumbnail") < 0) {
       var thumbLink = node.querySelector(".make-link");
       thumbLink.setAttribute("href", make.url);
-      console.log(make.thumbnail);
       if(make.thumbnail) {
         thumb.style.backgroundImage = "url(" + make.thumbnail + ")";
       } else {
@@ -75,7 +79,6 @@
         } else {
           thumb.classList.add("default-thumbnail");
         }
-
       }
     } else {
       thumb.parentNode.removeChild(thumb);
@@ -130,23 +133,28 @@
       createdAt.parentNode.removeChild(createdAt);
     }
 
+
+    //Like count
+    var likesWrapper = node.querySelector(".make-likes");
+    if(hidden.indexOf("likes-count") < 0) {
+      var likeCount = node.querySelector(".make-likes-count");
+      likeCount.innerHTML = make.likes.length;
+      if(make.likes.length == 0) {
+        likesWrapper.style.display = "none";
+      }
+      if(make.likes.length > 2) {
+        likesWrapper.innerHTML = likesWrapper.innerHTML + "s";
+      }
+    } else {
+      likesWrapper.parentNode.removeChild(likesWrapper);
+    }
+
     //Descripiton
     var description = node.querySelector(".make-description");
     if(hidden.indexOf("description") < 0){
       description.innerHTML = make.description;
     } else {
       description.parentNode.removeChild(description);
-    }
-
-    //Like count
-    var likesWrapper = node.querySelector(".make-likes");
-    var likeCount = node.querySelector(".make-likes-count");
-    likeCount.innerHTML = make.likes.length;
-    if(make.likes.length == 0) {
-      likesWrapper.style.display = "none";
-    }
-    if(make.likes.length > 2) {
-      likesWrapper.innerHTML = likesWrapper.innerHTML + "s";
     }
 
     //Remix Button
@@ -156,6 +164,8 @@
     } else {
       remix.parentNode.removeChild(remix);
     }
+
+
 
     //Remix Button
     var like = node.querySelector(".make-like");
@@ -202,29 +212,13 @@
   }
 
   function countRowItems(){
-    //Calculate items per row on hardcoded value vs container width
-    var makeEls = galleryElement.querySelectorAll(".make-node");
-    var lastTop;
-    var itemsPerRow = 0;
-
-    for(var i = 0; i < makeEls.length; i++){
-      var elPos = makeEls[i].getBoundingClientRect();
-      var xPos = elPos.top;
-      if(!lastTop) {
-        lastTop = xPos;
-      }
-      if(xPos > lastTop){
-        lastTop = xPos;
-        return itemsPerRow;
-      }
-      itemsPerRow++;
-    }
+    var galleryWidth = galleryElement.offsetWidth;
+    return Math.floor(galleryWidth/minWidth);
   }
 
   function fixHeights(){
 
-    var galleryWidth = galleryElement.offsetWidth;
-    var columnCount = Math.floor(galleryWidth / 250);
+    var columnCount = countRowItems();
     galleryElement.setAttribute("data-cols",columnCount);
 
     var makeEls = galleryElement.querySelectorAll(".make-node");
@@ -233,37 +227,60 @@
     var itemsPerRow = countRowItems();
     var rowItem = 0;
     var currentRow = 1;
+    var rowCount = Math.ceil(makeEls.length / itemsPerRow);
 
-    for(var i = 0; i < makeEls.length; i++){
+    for(var i = 0; i < rowCount; i++){
 
-      makeEl = makeEls[i];
-      makeDetails = makeEl.querySelector(".make-details");
-      makeDetails.style.height = "";
+      tallest = 0;
 
-      var height = makeDetails.offsetHeight;
-
-      if (height > tallest){
-        tallest = height - 50;
-      }
-
-      if(rowItem >= parseInt(itemsPerRow-1)) {
-        for(var j = (i-itemsPerRow+1); j < i+1; j ++ ){
-          makeEls[j].querySelector(".make-details").style.height = tallest + "px";
+      //Figure out tallest Make in each row
+      for(var j = 0; j < itemsPerRow; j++){
+        var makeIndex = j + (i*itemsPerRow);
+        var makeEl = makeEls[makeIndex];
+        if(makeEl){
+          makeDetails = makeEl.querySelector(".make-details");
+          makeDetails.style.height = "";
+          var height = makeDetails.offsetHeight;
+          if (height > tallest){
+            tallest = height;
+          }
         }
-        tallest = 0;
-        rowItem = -1;
-        currentRow++;
       }
 
-      rowItem++;
+      //Set each make to the tallest in that row
+      tallest = tallest - 50;
+      for(var j = 0; j < itemsPerRow; j++){
+        var makeIndex = j + (i*itemsPerRow);
+        var makeEl = makeEls[makeIndex];
+        if(makeEl){
+          makeEl.querySelector(".make-details").style.height = tallest + "px";
+        }
+      }
+
 
     }
 
+
+
+
+
   }
 
-  function MakeGallery(query, element, clientConfig) {
+  function MakeGallery(query, clientConfig) {
+
+    clientConfig.apiURL = MakeAPIURL;
+    var element = clientConfig.elementSelector;
 
     galleryElement = document.querySelector(element);
+
+    galleryElement.innerHTML =  noMakesHTML;
+
+    if(!galleryElement.classList.contains("make-gallery")) {
+      galleryElement.classList.add("make-gallery");
+    }
+
+    galleryElement.style.backgroundColor = clientConfig.backgroundColor;
+
     var self = this;
 
     this.element = typeof element === "string" ? document.querySelector( element ) : element;
@@ -276,20 +293,21 @@
       throw new Error( "you must provide a MakeAPI client Configuration object" );
     }
 
-    var makeClient = new MakeAPI( clientConfig );
-
+    var makeClient = new MakeAPI(clientConfig);
     query.limit = query.limit ? query.limit : DEFAULT_LIMIT;
-    makeClient.find( query ).then(function( err, makes, count ) {
-      if ( err ) {
-        throw err;
-      }
+    makeClient.find(query).then(function(err,makes,count ) {
+    if (err) { throw err;}
 
-      if ( count ) {
-        build( self.element, makes, clientConfig );
-      } else {
+    if ( count ) {
+      build( self.element, makes, clientConfig );
+    } else {
+        // Put up a sweet message
         // what do we do for no makes?
-      }
-    });
+        // Cry.
+        // Add a 0 makes found thingy
+    }
+
+  });
 
     return this;
   }
